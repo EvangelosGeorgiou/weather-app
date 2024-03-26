@@ -34,6 +34,35 @@ Two simple database tables are used to store the locations and the forecasts.
 
 ![Database](images/db.png)
 
+```php
+Schema::create('locations', function (Blueprint $table) {
+            $table->id();
+            $table->string('country');
+            $table->string('code');
+            $table->string('city');
+            $table->string('latitude');
+            $table->string('longitude');
+            $table->timestamps();
+
+            $table->unique(['code', 'city']);
+        });
+
+Schema::create('forecasts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('location_id')->index()->constrained();
+            $table->enum('source', ['openweathermap', 'weatherbit']);
+            $table->timestamp('timestamp');
+            $table->decimal('temperature');
+            $table->decimal('humidity', 5);
+            $table->decimal('wind_speed');
+            $table->decimal('pressure');
+            $table->integer('weather_code');
+            $table->string('weather_description');
+            $table->timestamps();
+
+            $table->unique(['location_id', 'timestamp','source']);
+        });
+```
 
 ## API Reference
 
