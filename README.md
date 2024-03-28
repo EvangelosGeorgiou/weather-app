@@ -116,14 +116,13 @@ Available Filters
 - city
 - date
 - lat&lon
-- from_date
-
+- from_date&to_date
 API examples to retrieve forecast data
 ```
 /api/forecast?city=Limassol
 /api/forecast?city=Limassol&date=2024-03-26
-/api/forecast?lat=123&lon=123&from_date=2024-03-26&to_date<=2024-03-27
-/api/forecast?lat=123&lon=123
+/api/forecast?lat=34.6852901&lon=33.0332657&from_date=2024-03-26&to_date<=2024-03-27
+/api/forecast?lat=34.6852901&lon=33.0332657
 ```
 
 ## How to retrieve forecast data
