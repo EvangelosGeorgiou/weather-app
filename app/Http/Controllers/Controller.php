@@ -81,7 +81,7 @@ class Controller extends BaseController
             ->with('location')
             ->paginate($request->input('page-size', 10), ['*'], 'page', $request->input('page', 1));
 
-        Cache::remember($cacheKey, -1, function () use ($data) {
+        Cache::remember($cacheKey, env('FORECAST_CACHE_TIME', -1), function () use ($data) {
             return $data;
         });
 
