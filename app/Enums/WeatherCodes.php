@@ -18,7 +18,7 @@ enum WeatherCodes: int
     /**
      * @throws Exception
      */
-    public static function fromCode($code): WeatherCodes
+    public static function fromCode(int $code): WeatherCodes
     {
         switch ($code){
             case $code >= 200 && $code < 300:
@@ -37,7 +37,7 @@ enum WeatherCodes: int
                 return self::CLOUDS;
         }
 
-        throw new Exception('Invalid weather code');
+        throw new Exception("Invalid weather code [$code]");
     }
 
 }

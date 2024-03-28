@@ -29,12 +29,16 @@ class WeatherDataCollectionJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function __invoke(): void
     {
+        logger()->channel('info')->info('Weather data collection job started');
+
         Location::all()
             ->map(function (Location $location) {
                 event(new WeatherDataCollectionEvent($location));
             });
+
+        logger()->channel('info')->info('Weather data collection job finished');
     }
 
 }
