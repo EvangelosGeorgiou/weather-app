@@ -26,7 +26,7 @@ class Location extends Model
      */
     public function saveForecasts(?Collection $data): void
     {
-        if (is_null($data)) {
+        if (is_null($data) || $data->isEmpty()) {
             return;
         }
 

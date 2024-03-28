@@ -75,7 +75,7 @@ class WeatherApiTest extends TestCase
             $mock->shouldReceive('getForecastWeather')->andReturn($this->getMockData($location->id, 'weatherbit', 5));
         });
 
-        (new WeatherDataCollectionJob())->handle();
+        (new WeatherDataCollectionJob())();
 
         $forecasts = Forecast::all();
         $this->assertCount(10, $forecasts);
