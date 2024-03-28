@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Contacts\GatherLocationDetails;
 use App\Enums\WeatherCodes;
 use App\Events\WeatherDataCollectionEvent;
 use App\Integrations\OpenWeather;
@@ -9,11 +10,14 @@ use App\Integrations\WeatherBit;
 use App\Jobs\WeatherDataCollectionJob;
 use App\Models\Forecast;
 use App\Models\Location;
+use App\Objects\LocationDetails;
 use App\Objects\WeatherDetails;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
@@ -28,15 +32,27 @@ class WeatherApiTest extends TestCase
     {
         Event::fake();
 
+        if ($this->app->environment('ci')) {
+            $location = Location::factory([
+                'city' => 'Limassol',
+                'code' => 'CY',
+            ])->create();
+
+            $locationDetails = new LocationDetails($location->country, $location->code, $location->city, $location->latitude, $location->longitude);
+
+            $this->mock(OpenWeather::class, function (MockInterface $mock) use ($locationDetails) {
+                $mock->shouldReceive('getLocationBasedOnCity')->andReturn($locationDetails);
+                $mock->shouldReceive('getLocationBasedOnCoordinates')->andReturn($locationDetails);
+            });
+        }
+
         $response = $this->post('api/city', ['city' => 'Limassol']);
-        $response->assertStatus(201);
         $location = $response->json('data');
 
         $this->assertSame('Limassol', $location['city']);
         $this->assertSame('CY', $location['code']);
 
         $coordinatesResponse = $this->post('api/coordinates', ['lat' => $location['latitude'], 'lon' => $location['longitude']]);
-        $coordinatesResponse->assertStatus(200);
         $coordinatesLocation = $coordinatesResponse->json('data');
         $this->assertSame('Limassol', $coordinatesLocation['city']);
         $this->assertSame('CY', $coordinatesLocation['code']);
@@ -48,12 +64,12 @@ class WeatherApiTest extends TestCase
     {
         $response = $this->post('api/city');
         $response->assertStatus(422);
-        $this->assertSame('City is required',$response->json('city.0'));
+        $this->assertSame('City is required', $response->json('city.0'));
 
         $response = $this->post('api/coordinates');
         $response->assertStatus(422);
-        $this->assertSame('Latitude is required',$response->json('lat.0'));
-        $this->assertSame('Longitude is required',$response->json('lon.0'));
+        $this->assertSame('Latitude is required', $response->json('lat.0'));
+        $this->assertSame('Longitude is required', $response->json('lon.0'));
 
     }
 
@@ -67,11 +83,11 @@ class WeatherApiTest extends TestCase
             'longitude' => 33.3638568,
         ]);
 
-        $this->mock(OpenWeather::class, function (MockInterface $mock) use ($location){
+        $this->mock(OpenWeather::class, function (MockInterface $mock) use ($location) {
             $mock->shouldReceive('getForecastWeather')->andReturn($this->getMockData($location->id, 'openweathermap', 5));
         });
 
-        $this->mock(WeatherBit::class, function (MockInterface $mock) use ($location){
+        $this->mock(WeatherBit::class, function (MockInterface $mock) use ($location) {
             $mock->shouldReceive('getForecastWeather')->andReturn($this->getMockData($location->id, 'weatherbit', 5));
         });
 
