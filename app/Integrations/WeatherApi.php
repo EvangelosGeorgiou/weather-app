@@ -21,11 +21,11 @@ abstract class WeatherApi implements \App\Contacts\WeatherApi
             ->get($url, $params);
 
         if ($response->status() !== 200) {
-            logger()->error("Failed to call the url : $url", ['response' => $response->json()]);
+            logger()->channel('error')->error("Failed to call the url : $url", ['response' => $response->json()]);
             throw new Exception("Failed to call the url : $url");
         }
 
-        logger()->info('Successfully called the url : ' . $url, ['response' => $response->json()]);
+        logger()->channel('info')->info('Successfully called the url : ' . $url, ['response' => $response->json()]);
         return $response;
     }
 

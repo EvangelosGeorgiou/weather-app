@@ -41,7 +41,7 @@ class Location extends Model
                 );
             });
         }catch (\Exception $e) {
-            logger()->error('Failed to save forecasts', ['error' => $e->getMessage()]);
+            logger()->channel('error')->error('Failed to save forecasts', ['error' => $e->getMessage()]);
         }
     }
 }
