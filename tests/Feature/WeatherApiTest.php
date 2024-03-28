@@ -16,6 +16,8 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
@@ -35,9 +37,10 @@ class WeatherApiTest extends TestCase
                 'city' => 'Limassol',
                 'code' => 'CY',
             ])->create();
+
             $locationDetails = new LocationDetails($location->country, $location->code, $location->city, $location->latitude, $location->longitude);
 
-            $this->mock(GatherLocationDetails::class, function (MockInterface $mock) use ($locationDetails) {
+            $this->mock(OpenWeather::class, function (MockInterface $mock) use ($locationDetails) {
                 $mock->shouldReceive('getLocationBasedOnCity')->andReturn($locationDetails);
                 $mock->shouldReceive('getLocationBasedOnCoordinates')->andReturn($locationDetails);
             });
