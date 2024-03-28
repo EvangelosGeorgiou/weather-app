@@ -5,6 +5,10 @@ A user can get forecast information based on city and location. <br>
 The application will store the location details and the forecast data in the database.<br>
 The forecast data will be retrieved from the OpenWeatherMap and WeatherBit APIs.<br>
 
+## Weather APIs used:
+- https://www.weatherbit.io/api/weather-forecast-hourly
+- https://openweathermap.org/forecast5#5days
+
 ## Setup
 
 - clone the repository
@@ -16,18 +20,19 @@ composer install
 ```bash 
  ./vendor/bin/sail up -d
  ```
-- run the migrations. I have some seed data from the testing that I did so you can run the seeders as well with the --seed.
+- run the migrations. I have some seed data from the testing that I did, so you can run the seeders as well with the --seed.
 ```bash
 php artisan migrate
 ```
 ```bash
 php artisan migrate --seed
 ```
+- Add the following env variables
+```dotenv
+OPEN_WEATHER_API_KEY=yourkey
+WEATHER_BIT_API_KEY=yourkey
+```
 
-
-## Weather APIs used:
-- https://www.weatherbit.io/api/weather-forecast-hourly
-- https://openweathermap.org/forecast5#5days
 
 ## Database structure
 Two simple database tables are used to store the locations and the forecasts.
