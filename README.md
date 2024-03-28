@@ -33,6 +33,10 @@ OPEN_WEATHER_API_KEY=yourkey
 WEATHER_BIT_API_KEY=yourkey
 FORECAST_CACHE_TIME=-1 #add how long you want the forecast data to be cached
 ```
+- To run the scheduler, run this command
+```bash
+php artisan schedule:run
+```
 
 
 ## Database structure
