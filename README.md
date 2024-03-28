@@ -117,6 +117,7 @@ Available Filters
 - date
 - lat&lon
 - from_date&to_date
+
 API examples to retrieve forecast data
 ```
 /api/forecast?city=Limassol
